@@ -1,64 +1,33 @@
 package com.example.savegram;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.DownloadManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.annotation.NonNull;
-import android.util.Log;
-import android.util.Patterns;
 import android.view.MenuItem;
-import android.webkit.URLUtil;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import com.example.savegram.Fragments.CliphistoryFragment;
+import com.example.savegram.Fragments.GalleryFragment;
+import com.example.savegram.Fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
     private String DOWNLOAD_TAG = "/?__a=1";
     private RequestQueue requestQueue;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-            }
-            return false;
-        }
-    };
+    private Fragment fragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +46,8 @@ public class MainActivity extends AppCompatActivity {
         if (!hasPermissions(this, permissions)) {
             ActivityCompat.requestPermissions(this,permissions, PERMISSIONS_ALL);
         }
-        // Volley
-        requestQueue = Volley.newRequestQueue(this);
-
-        imageDownloader();
+        // app started
+        getFagement(0);
     }
 
     public static boolean hasPermissions(Context context, String... permissions){
@@ -94,7 +61,35 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private String getClipboardURL(){
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            getFagement(item.getItemId());
+            return true;
+        }
+    };
+    public void getFagement(int position){
+        switch (position) {
+            case R.id.navigation_home:
+                fragment = new HomeFragment();
+                break;
+            case R.id.navigation_dashboard:
+                fragment = new GalleryFragment();
+                break;
+            case R.id.navigation_notifications:
+                fragment = new CliphistoryFragment();
+                break;
+        }
+        if(fragment!=null){
+            FragmentTransaction fragmentTransaction =  getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragments,fragment);
+            fragmentTransaction.commit();
+        }
+    }
+
+  /*  private String getClipboardURL(){
         Pattern pattern = Patterns.WEB_URL;
         ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip =  clipboardManager.getPrimaryClip();
@@ -103,12 +98,12 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
-
-    @SuppressLint("NewApi")
+*/
+/*    @SuppressLint("NewApi")
     private void downloadFile(String updateUrl) {
         DownloadManager downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(updateUrl));
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, DownloadManager.COLUMN_TITLE+".jpg");
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/SAVEGRAM/"+DownloadManager.COLUMN_TITLE+".jpg");
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         downloadManager.enqueue(request);
     }
@@ -126,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return FinalURL;
-    }
-
+    }*/
+/*
     public void imageDownloader(){
         String clip = getDownloadLink(getClipboardURL())+DOWNLOAD_TAG;
         mTextMessage.setText(clip);
@@ -138,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
     private String getDownloadLink(String url){
         int index=url.lastIndexOf('/');
         return url.substring(0,index);
-    }
-
+    }*/
+/*
     private void getInstaObject(String url){
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -160,11 +155,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(request);
-    }
+    }*/
 
     @Override
     protected void onResume() {
         super.onResume();
-        imageDownloader();
     }
 }
