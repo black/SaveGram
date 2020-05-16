@@ -33,7 +33,7 @@ public class ClipboardService extends Service {
                 .setSmallIcon(R.drawable.ic_photo_black_24dp)
                 .setContentIntent(pendingIntent)
                 .build();
-        startForeground(1,notification);
+        startForeground(101,notification);
 
         return START_STICKY;
     }

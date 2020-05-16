@@ -18,7 +18,7 @@ public class ClipNotification extends Application {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
-                    "Save Gram",
+                    "Save Gram Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
 

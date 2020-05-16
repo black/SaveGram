@@ -17,9 +17,6 @@ import android.widget.Switch;
 import com.example.savegram.ClipBoardManager.ClipboardService;
 import com.example.savegram.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class HomeFragment extends Fragment {
 
     @Override
@@ -44,9 +41,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void startService() {
-        Intent serviceIntent = new Intent(getActivity(), ClipboardService.class);
-        serviceIntent.putExtra("COVID", "COVID");
-        ContextCompat.startForegroundService(getActivity(), serviceIntent);
+        ContextCompat.startForegroundService(getActivity(), new Intent(getActivity(), ClipboardService.class));
     }
 
     public void stopService() {
